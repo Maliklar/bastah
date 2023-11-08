@@ -10,16 +10,58 @@ datasource db {
 model User {
   id           Int             @id @default(autoincrement())
   email        String          @unique
-  username  String
+  username     String
   mobileNumber String
-  countryCode String
+  countryCode  String
   name         String?
-  accessLevel UserAccessLevel @default(Customer)
-  imageUrl String?
-  about String
+  accessLevel  UserAccessLevel @default(Customer)
+  imageUrl     String?
+  about        String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now())
+  listings     Listing[]
+}
+
+model Category {
+  id            Int           @id @default(autoincrement())
+  titleAr       String
+  titleEn       String
+  subCategories SubCategory[] @relation()
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now())
+}
+
+model SubCategory {
+  id         Int       @id @default(autoincrement())
+  titleAr    String
+  titleEn    String
+  categoryId Int
+  category   Category  @relation(fields: [categoryId], references: [id])
+  listing    Listing[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+}
+
+model Listing {
+  id          Int             @id @default(autoincrement())
+  title       String
+  description String
+  categoryId  Int
+  category    SubCategory     @relation(fields: [categoryId], references: [id])
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id])
+  images      ListingImages[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @default(now())
+}
+
+model ListingImages {
+  id        Int      @id @default(autoincrement())
+  listingId Int
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-
 }
 
 
